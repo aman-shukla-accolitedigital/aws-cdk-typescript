@@ -1,0 +1,6 @@
+{
+    "imports": {
+        "@test/header": "http://localhost:4198/spa.js",
+        "@test/users": "http://localhost:4110/spa.js"
+    }
+}
