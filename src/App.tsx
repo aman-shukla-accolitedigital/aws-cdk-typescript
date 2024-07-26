@@ -1,5 +1,3 @@
-import { useState } from 'react'
-// @ts-expect-error
 import Parcel from 'single-spa-react/parcel'
 import './App.scss'
 import { mountRootParcel } from 'single-spa'
