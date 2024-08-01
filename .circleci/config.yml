@@ -9,7 +9,7 @@ jobs:
           name: Saying Hello
           command: |
             echo 'Hello World!'
-            echo 'This is the delivery pipeline'
+            ech 'This is the delivery pipeline'
   # fetching code from the repo
   Fetch-Code:
     docker:
@@ -36,7 +36,7 @@ workflows:
       - Hello-World
       - Fetch-Code:
           requires:
-            - Hello-World1
+            - Hello-World
       - Using-Node:
           requires:
             - Fetch-Code
