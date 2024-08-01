@@ -9,7 +9,7 @@ jobs:
           name: Saying Hello
           command: |
             echo 'Hello World!'
-            ech 'This is the delivery pipeline'
+            echo 'This is the delivery pipeline'
   # fetching code from the repo
   Fetch-Code:
     docker:
@@ -21,6 +21,7 @@ jobs:
           command: |
             ls -al
             echo '^^^Your repo files^^^'
+            ech 'ss'
   # running a node container
   Using-Node:
     docker:
