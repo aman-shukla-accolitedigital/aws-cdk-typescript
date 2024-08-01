@@ -3,7 +3,7 @@ jobs:
   # running commands on a basic image
   Hello-World:
     docker:
-      - image: cimg/base:2021.04
+      - image: alpine:3.15
     steps:
       - run:
           name: Saying Hello
@@ -21,7 +21,6 @@ jobs:
           command: |
             ls -al
             echo '^^^Your repo files^^^'
-            ech 'ss'
   # running a node container
   Using-Node:
     docker:
@@ -31,6 +30,15 @@ jobs:
           name: Running the Node Container
           command: |
             node -v
+  Now-Complete:
+    docker:
+      - image: alpine:3.15
+    steps:
+      - run:
+          name: Approval Complete
+          command: |
+            echo 'The work is now complete.'
+
 workflows:
   Example-Workflow:
     jobs:
@@ -38,4 +46,14 @@ workflows:
       - Fetch-Code:
           requires:
             - Hello-World
-      - Using-Node
+      - Using-Node:
+          requires:
+            - Fetch-Code
+      - Hold-for-Approval:
+          type: approval
+          requires:
+            - Using-Node
+            - Fetch-Code
+      - Now-Complete:
+          requires:
+            - Hold-for-Approval
