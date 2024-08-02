@@ -50,9 +50,6 @@ jobs:
        
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/project
-    
       # - run:
       #     name: Configure AWS CLI
           # command: |
