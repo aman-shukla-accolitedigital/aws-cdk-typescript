@@ -50,6 +50,8 @@ jobs:
        
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/project
     
       # - run:
       #     name: Configure AWS CLI
@@ -60,7 +62,7 @@ jobs:
           #   aws configure set region us-east-1
     
       - aws-s3/sync:
-          from: ./dist
+          from: ~/artifacts
           to: 's3://circle-ci-aman'
 
   testing:
