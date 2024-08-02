@@ -1,94 +1,102 @@
 version: 2.1
 orbs:
-  node: circleci/node@5.0.2
+  node: circleci/node@5
+  aws-s3: circleci/aws-s3@3.1.1
+  # aws-s3: circleci/aws-s3@4.0.0 # use the AWS S3 orb in your configuration
+  # aws-cli: circleci/aws-cli@4.1.3
+
 jobs:
-  # running commands on a basic image
-  Hello-World:
-    docker:
-      - image: alpine:3.15
-    steps:
-      - run:
-          name: Saying Hello
-          command: |
-            echo 'Hello World!'
-            echo 'This is the delivery pipeline'
-  # fetching code from the repo
-  Fetch-Code:
-    docker:
-      - image: cimg/base:2021.04
-    steps:
-      - checkout
-      - run:
-          name: Getting the Code
-          command: |
-            ls -al
-            echo '^^^Your repo files^^^'
-  # running a node container
-  Using-Node:
+  checkout_and_install:
     executor: node/default
-    docker:
-      - image: cimg/node:17.2
+    working_directory: ~/project/react-root
     steps:
-      - checkout
+      - checkout:
+          path: ~/project
       - node/install-packages:
           pkg-manager: npm
       - run:
-          command: npm run build
-          name: Build app
+          name: Install dependencies
+          command: npm install
       - persist_to_workspace:
-          root: ~/project
-          paths: .
-      - run:
-          name: Running the Node Container
-          command: |
-            node -v;
-            npm -v;
-            ls -al
-            cd dist && ls -al;
-  Now-Complete:
-    docker:
-      - image: alpine:3.15
+          root: .
+          paths:
+            - .
+            
+  build-node:
+    # Build node project
+    executor: node/default
+    working_directory: ~/project/react-root
     steps:
+      - attach_workspace:
+          at: ~/project/react-root
       - run:
-          name: Approval Complete
-          command: |
-            echo 'The work is now complete.'
-  Creating-Artifact:
-    docker:
-      - image: python:3.6.3-jessie
-    working_directory: /tmp
-    steps:
+          name: Vite build
+          command: npm run build
       - run:
-          name: Creating Dummy Artifacts
-          command: |
-            echo "my artifact file" > /tmp/art-1;
-            mkdir /tmp/artifacts;
-            echo "my artifact files in a dir" > /tmp/artifacts/art-2;
+          name: Create the ~/artifacts directory if it doesn't exist
+          command: mkdir -p ~/artifacts
+      # Copy output to artifacts dir
+      - run:
+          name: Copy artifacts
+          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
       - store_artifacts:
-          path: /tmp/artifact-1
-          destination: artifact-file
+          path: ~/artifacts
+          destination: node-build
 
-      - store_artifacts:
-          path: /tmp/artifacts
+  deploy:
+    # This is an example deploy job, not actually used by the workflow
+    docker:
+      - image: cimg/base:stable
+       
+    steps:
+      - checkout
+    
+      # - run:
+      #     name: Configure AWS CLI
+          # command: |
+          #   echo "[default]" > ~/.aws/credentials
+          #   echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
+          #   echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+          #   aws configure set region us-east-1
+    
+      - aws-s3/sync:
+          # auth:
+          # - aws-cli/setup:
+          #       role_arn: arn:aws:iam::590376488337:role/aws-controltower-AdministratorExecutionRole
+          from: ./
+          to: 's3://circle-ci-aman'
+          # arguments: | # Optional arguments
+          #   --acl public-read
+          #   --cache-control "max-age=86400"
+
+  testing:
+    executor: node/default
+    working_directory: ~/project/react-root
+    steps:
+      - attach_workspace:
+          at: ~/project/react-root
+      - run:
+          name: Run tests
+          command: npx jest --ci --runInBand --reporters=default --reporters=jest-junit 
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/
+            JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
+      - store_test_results:
+          path: ./reports/
 
 workflows:
-  Example-Workflow:
+  test_and_build:
     jobs:
-      - Hello-World
-      - Fetch-Code:
+      - checkout_and_install
+      - build-node:
           requires:
-            - Hello-World
-      - Using-Node:
+            - checkout_and_install
+      - testing:
           requires:
-            - Fetch-Code
-      - Hold-for-Approval:
-          type: approval
+            - checkout_and_install
+      - deploy:
           requires:
-            - Using-Node
-            - Fetch-Code
-      - Now-Complete:
-          requires:
-            - Hold-for-Approval
-      - Creating-Artifact:
-          requires:
-            - Now-Complete
+            - build-node # Only run deploy job once the build job has completed
+          filters:
+            branches:
+              only: main # Only deploy when the commit is on the Main branch
