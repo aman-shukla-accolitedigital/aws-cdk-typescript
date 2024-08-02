@@ -53,8 +53,7 @@ jobs:
       - image: cimg/base:stable
        
     steps:
-      - attach_workspace:
-          at: ~/
+      - checkout
       # - run:
       #     name: Configure AWS CLI
           # command: |
