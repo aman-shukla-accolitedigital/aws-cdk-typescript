@@ -60,7 +60,7 @@ jobs:
           #   aws configure set region us-east-1
     
       - aws-s3/sync:
-          from: bucket
+          from: ~/project/dist
           to: 's3://circle-ci-aman'
 
   testing:
