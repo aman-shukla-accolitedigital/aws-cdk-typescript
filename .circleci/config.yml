@@ -55,7 +55,7 @@ jobs:
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
-          at: ~/project/workspace/build
+          at: ~/artifacts
       # - run:
       #     name: Configure AWS CLI
           # command: |
@@ -65,7 +65,7 @@ jobs:
           #   aws configure set region us-east-1
     
       - aws-s3/sync:
-          from: /project/workspace/build
+          from: .
           to: 's3://circle-ci-aman'
 
 workflows:
