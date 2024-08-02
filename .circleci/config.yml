@@ -62,9 +62,6 @@ jobs:
       - aws-s3/sync:
           from: bucket
           to: 's3://circle-ci-aman'
-          arguments: | # Optional arguments
-            --acl public-read \
-            --cache-control "max-age=86400"
 
   testing:
     executor: node/default
