@@ -59,7 +59,7 @@ jobs:
           #   aws configure set region us-east-1
     
       - aws-s3/sync:
-          from: ~/artifacts
+          from: ~/project/artifacts
           to: 's3://circle-ci-aman'
 
   testing:
