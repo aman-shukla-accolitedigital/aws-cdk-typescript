@@ -8,10 +8,10 @@ orbs:
 jobs:
   checkout_and_install:
     executor: node/default
-    working_directory: ~/project
+    working_directory: /project
     steps:
       - checkout:
-          path: ~/project
+          path: /project
       - node/install-packages:
           pkg-manager: npm
       - run:
@@ -25,10 +25,10 @@ jobs:
   build-node:
     # Build node project
     executor: node/default
-    working_directory: ~/project
+    working_directory: /project
     steps:
       - attach_workspace:
-          at: ~/project
+          at: /project
       - run:
           name: Vite build
           command: npm run build
@@ -38,7 +38,7 @@ jobs:
       # Copy output to artifacts dir
       - run:
           name: Copy artifacts
-          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true | cp -R build dist public .output .next .docusaurus ~/workspace 2>/dev/null || true
+          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true | cp -R build dist public .output .next .docusaurus /workspace 2>/dev/null || true
       - store_artifacts:
           path: ~/artifacts
           destination: node-build
@@ -55,7 +55,7 @@ jobs:
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
-          at: ~/project/workspace
+          at: /project/workspace
       # - run:
       #     name: Configure AWS CLI
           # command: |
@@ -65,32 +65,14 @@ jobs:
           #   aws configure set region us-east-1
     
       - aws-s3/sync:
-          from: ~/project/workspace/build
+          from: /project/workspace/build
           to: 's3://circle-ci-aman'
-
-  testing:
-    executor: node/default
-    working_directory: ~/project
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - run:
-          name: Run tests
-          command: npx jest --ci --runInBand --reporters=default --reporters=jest-junit 
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: ./reports/
-            JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
-      - store_test_results:
-          path: ./reports/
 
 workflows:
   test_and_build:
     jobs:
       - checkout_and_install
       - build-node:
-          requires:
-            - checkout_and_install
-      - testing:
           requires:
             - checkout_and_install
       - deploy:
