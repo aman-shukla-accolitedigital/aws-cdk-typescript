@@ -43,9 +43,9 @@ jobs:
           path: ~/artifacts
           destination: node-build
       - persist_to_workspace:
-          root: ~/workspace
+          root: ~/project
           paths:
-            - build
+            - workspace
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
