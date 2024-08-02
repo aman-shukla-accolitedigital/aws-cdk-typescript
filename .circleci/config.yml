@@ -45,7 +45,7 @@ jobs:
       - persist_to_workspace:
           root: ~/artifacts
           paths:
-            - .
+            - ./
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
@@ -65,7 +65,7 @@ jobs:
           #   aws configure set region us-east-1
     
       - aws-s3/sync:
-          from: .
+          from: ./
           to: 's3://circle-ci-aman'
 
 workflows:
