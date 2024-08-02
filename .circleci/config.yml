@@ -60,14 +60,11 @@ jobs:
           #   aws configure set region us-east-1
     
       - aws-s3/sync:
-          # auth:
-          # - aws-cli/setup:
-          #       role_arn: arn:aws:iam::590376488337:role/aws-controltower-AdministratorExecutionRole
-          from: ./
+          from: bucket
           to: 's3://circle-ci-aman'
-          # arguments: | # Optional arguments
-          #   --acl public-read
-          #   --cache-control "max-age=86400"
+          arguments: | # Optional arguments
+            --acl public-read \
+            --cache-control "max-age=86400"
 
   testing:
     executor: node/default
