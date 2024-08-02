@@ -8,7 +8,7 @@ orbs:
 jobs:
   checkout_and_install:
     executor: node/default
-    working_directory: ~/project/react-root
+    working_directory: ~/project
     steps:
       - checkout:
           path: ~/project
@@ -25,10 +25,10 @@ jobs:
   build-node:
     # Build node project
     executor: node/default
-    working_directory: ~/project/react-root
+    working_directory: ~/project
     steps:
       - attach_workspace:
-          at: ~/project/react-root
+          at: ~/project
       - run:
           name: Vite build
           command: npm run build
@@ -71,10 +71,10 @@ jobs:
 
   testing:
     executor: node/default
-    working_directory: ~/project/react-root
+    working_directory: ~/project
     steps:
       - attach_workspace:
-          at: ~/project/react-root
+          at: ~/project
       - run:
           name: Run tests
           command: npx jest --ci --runInBand --reporters=default --reporters=jest-junit 
