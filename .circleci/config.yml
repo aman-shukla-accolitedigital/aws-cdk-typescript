@@ -34,7 +34,7 @@ jobs:
           command: npm run build
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
-          command: mkdir -p ~/artifacts | mkdir -p workspace
+          command: mkdir -p ~/artifacts | mkdir -p ~/project/workspace
       # Copy output to artifacts dir
       - run:
           name: Copy artifacts
