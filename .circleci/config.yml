@@ -58,7 +58,7 @@ jobs:
           at: ~/artifacts
       - run:
           name: List Directory
-          command: ls -al
+          command: cd circleci && ls -al
       # - run:
       #     name: Configure AWS CLI
           # command: |
