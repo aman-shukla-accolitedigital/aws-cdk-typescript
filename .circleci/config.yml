@@ -24,6 +24,8 @@ jobs:
             
   build-node:
     # Build node project
+    docker:
+      - image: cimg/base:stable
     executor: node/default
     working_directory: ~/project
     steps:
@@ -46,6 +48,9 @@ jobs:
           root: ~/artifacts
           paths:
             - .
+      - aws-s3/sync:
+          from: ~/artifacts
+          to: 's3://circle-ci-aman'
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
@@ -78,9 +83,9 @@ workflows:
       - build-node:
           requires:
             - checkout_and_install
-      - deploy:
-          requires:
-            - build-node # Only run deploy job once the build job has completed
-          filters:
-            branches:
-              only: main # Only deploy when the commit is on the Main branch
+      # - deploy:
+      #     requires:
+      #       - build-node # Only run deploy job once the build job has completed
+      #     filters:
+      #       branches:
+      #         only: main # Only deploy when the commit is on the Main branch
