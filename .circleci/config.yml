@@ -43,7 +43,7 @@ jobs:
           path: ~/artifacts
           destination: node-build
       - persist_to_workspace:
-          root: ~/
+          root: .
           paths:
             - project/build
 
