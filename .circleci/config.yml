@@ -42,10 +42,6 @@ jobs:
       - store_artifacts:
           path: ~/artifacts
           destination: node-build
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/build
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
@@ -55,7 +51,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/
+          at: ~/project
     
       # - run:
       #     name: Configure AWS CLI
@@ -66,7 +62,7 @@ jobs:
           #   aws configure set region us-east-1
     
       - aws-s3/sync:
-          from: project/build
+          from: /artifacts
           to: 's3://circle-ci-aman'
 
   testing:
