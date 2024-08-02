@@ -34,18 +34,18 @@ jobs:
           command: npm run build
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
-          command: mkdir -p ~/artifacts
+          command: mkdir -p ~/artifacts | mkdir -p workspace
       # Copy output to artifacts dir
       - run:
           name: Copy artifacts
-          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
+          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true | cp -R build dist public .output .next .docusaurus ~/workspace 2>/dev/null || true
       - store_artifacts:
           path: ~/artifacts
           destination: node-build
       - persist_to_workspace:
-          root: .
+          root: workspace
           paths:
-            - .
+            - build
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
@@ -53,7 +53,9 @@ jobs:
       - image: cimg/base:stable
        
     steps:
-      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: ~/project/workspace
       # - run:
       #     name: Configure AWS CLI
           # command: |
@@ -63,7 +65,7 @@ jobs:
           #   aws configure set region us-east-1
     
       - aws-s3/sync:
-          from: ./
+          from: ~/project/workspace/build
           to: 's3://circle-ci-aman'
 
   testing:
