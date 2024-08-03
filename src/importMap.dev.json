@@ -1,8 +1,6 @@
 {
     "imports": {
-        "@test/parcels": "http://localhost:4201/src/parcels.ts",
         "@test/header": "http://localhost:4198/src/spa.ts",
-        "@test/header1": "http://localhost:4103/src/spa.ts",
         "@test/users": "http://localhost:4110/src/spa.ts"
     }
 }
