@@ -38,7 +38,7 @@ jobs:
       # Copy output to artifacts dir
       - run:
           name: Copy artifacts
-          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true | ls -al
+          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true | ls -al | find .
       - store_artifacts:
           path: ~/artifacts
           destination: node-build
@@ -68,7 +68,7 @@ jobs:
           #   aws configure set region us-east-1
     
       - aws-s3/sync:
-          from: .
+          from: dist
           to: 's3://circle-ci-aman'
 
 workflows:
