@@ -24,8 +24,6 @@ jobs:
             
   build-node:
     # Build node project
-    docker:
-      - image: cimg/base:stable
     executor: node/default
     working_directory: ~/project
     steps:
@@ -40,7 +38,7 @@ jobs:
       # Copy output to artifacts dir
       - run:
           name: Copy artifacts
-          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
+          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true | ls -al
       - store_artifacts:
           path: ~/artifacts
           destination: node-build
@@ -48,9 +46,6 @@ jobs:
           root: ~/artifacts
           paths:
             - .
-      - aws-s3/sync:
-          from: ~/artifacts
-          to: 's3://circle-ci-aman'
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
@@ -63,7 +58,7 @@ jobs:
           at: ~/artifacts
       - run:
           name: List Directory
-          command: cd circleci && ls -al
+          command: ls -al
       # - run:
       #     name: Configure AWS CLI
           # command: |
@@ -83,9 +78,9 @@ workflows:
       - build-node:
           requires:
             - checkout_and_install
-      # - deploy:
-      #     requires:
-      #       - build-node # Only run deploy job once the build job has completed
-      #     filters:
-      #       branches:
-      #         only: main # Only deploy when the commit is on the Main branch
+      - deploy:
+          requires:
+            - build-node # Only run deploy job once the build job has completed
+          filters:
+            branches:
+              only: main # Only deploy when the commit is on the Main branch
