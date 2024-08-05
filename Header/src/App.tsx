@@ -1,4 +1,5 @@
-import React from "react";
+
+// @tsx-expect-error
 import "./App.css";
 import Navbar from "./components/Navbar";
 import {

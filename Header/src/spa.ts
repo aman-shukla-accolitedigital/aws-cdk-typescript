@@ -1,7 +1,7 @@
 
 import React from 'react';
 import ReactDOMClient from 'react-dom/client';
-// @ts-expect-error
+
 import singleSpaReact from 'single-spa-react';
 import App from './App';
 import { cssLifecycleFactory } from 'vite-plugin-single-spa/ex';
@@ -9,10 +9,7 @@ import { cssLifecycleFactory } from 'vite-plugin-single-spa/ex';
 const lc = singleSpaReact({
     React,
     ReactDOMClient,
-    rootComponent: App,
-    errorBoundary(err: any, _info: any, _props: any) {
-        return '<div>Error: {err}</div>'
-    }
+    rootComponent: App
 });
 
 // IMPORTANT:  The argument passed here depends on the file name.

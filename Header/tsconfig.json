@@ -1,5 +1,12 @@
 {
   "files": [],
+  "allowJs": true,
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": false,
+    "allowJs": true,
+    "typeRoots": ["node_modules/@types"]
+  },
   "references": [
     {
       "path": "./tsconfig.app.json"

@@ -1,13 +1,10 @@
 
-import React from "react";
 import {
     Nav,
     NavLink,
     Bars,
     NavMenu,
-    NavBtn,
-    NavBtnLink,
-} from "./navbarElements";
+} from './navbarElements';
 
 const Navbar = () => {
     return (
@@ -19,19 +16,19 @@ const Navbar = () => {
                     <NavLink to="/about" >
                         About
                     </NavLink>
-                    <NavLink to="/events" activeStyle>
+                    <NavLink to="/events" >
                         Events
                     </NavLink>
-                    <NavLink to="/annual" activeStyle>
+                    <NavLink to="/annual" >
                         Annual Report
                     </NavLink>
-                    <NavLink to="/users" activeStyle>
+                    <NavLink to="/users" >
                         Users
                     </NavLink>
-                    <NavLink to="/blogs" activeStyle>
+                    <NavLink to="/blogs" >
                         Blogs
                     </NavLink>
-                    <NavLink to="/sign-up" activeStyle>
+                    <NavLink to="/sign-up" >
                         Sign Up
                     </NavLink>
             

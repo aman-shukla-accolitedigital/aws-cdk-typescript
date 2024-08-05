@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+
 import Parcel from 'single-spa-react/parcel'
 import { mountRootParcel } from 'single-spa'
 

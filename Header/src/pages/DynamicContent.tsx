@@ -1,7 +1,6 @@
 
-import React from "react";
 
-const DynamicContent = ({content}) => {
+const DynamicContent = (content: any) => {
     return (
         <div
             style={{
